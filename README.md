@@ -112,6 +112,7 @@ negative test per firewall rule, zone isolation scans from untrusted zones, firm
 | Seeded-error detection | **47 / 47** findings found, **0 false positives**; error-free version of the plant: **0 findings** |
 | Rules | 44, each linked to a clause of the (fictional) client specification |
 | Retrieval accuracy | 64 golden questions: correct clause in top 5 **98 %**, ranked first **84 %** |
+| Retrieval, unseen wording | 24 held-out questions in an engineer's own words, never tuned on: top 5 **79 %**, first **46 %** — the honest measure of the vocabulary gap |
 | Generated tests | 127 loop check sheets / 1,038 steps · 25 C&E functional tests · 1 BMS sequence test · network tests per firewall |
 | Test suite | 41 automated tests, including "error-free plant gives zero findings" |
 
@@ -144,7 +145,7 @@ conventions) with **zero code changes**.
 
 ## Roadmap
 
-- Semantic ranker alongside keyword search; public vendor datasheets in the index
+- Pretrained embedding model in the semantic-ranker slot (a corpus-trained LSA ranker was built and measured: no gain on 73 clauses, so not adopted); public vendor datasheets in the index
 - Answer-level evaluation of Claude on the golden questions
 - Portability test on a second fictional plant (HELIOS-5)
 
