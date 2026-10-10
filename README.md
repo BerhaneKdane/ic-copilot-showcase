@@ -114,7 +114,7 @@ negative test per firewall rule, zone isolation scans from untrusted zones, firm
 | Retrieval accuracy | 64 golden questions: correct clause in top 5 **98 %**, ranked first **84 %** |
 | Retrieval, unseen wording | 24 held-out questions in an engineer's own words, never tuned on: top 5 **79 %**, first **46 %** — the honest measure of the vocabulary gap |
 | Generated tests | 127 loop check sheets / 1,038 steps · 25 C&E functional tests · 1 BMS sequence test · network tests per firewall |
-| Test suite | 58 automated tests, incl. a guard that fails if a project's tag format reappears in engine code;, including "error-free plant gives zero findings" |
+| Test suite | 58 automated tests, including "error-free plant gives zero findings" and a guard that fails if a project's tag format reappears in engine code |
 
 Along the way the rules also caught **real mistakes in my own baseline design** — e.g. two SIL 3 HIPPS
 valves on the same SIS output card. The design was fixed and the specification clause widened, rather
