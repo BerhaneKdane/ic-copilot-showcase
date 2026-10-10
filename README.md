@@ -114,7 +114,7 @@ negative test per firewall rule, zone isolation scans from untrusted zones, firm
 | Retrieval accuracy | 64 golden questions: correct clause in top 5 **98 %**, ranked first **84 %** |
 | Retrieval, unseen wording | 24 held-out questions in an engineer's own words, never tuned on: top 5 **79 %**, first **46 %** — the honest measure of the vocabulary gap |
 | Generated tests | 127 loop check sheets / 1,038 steps · 25 C&E functional tests · 1 BMS sequence test · network tests per firewall |
-| Test suite | 41 automated tests, including "error-free plant gives zero findings" |
+| Test suite | 58 automated tests, incl. a guard that fails if a project's tag format reappears in engine code;, including "error-free plant gives zero findings" |
 
 Along the way the rules also caught **real mistakes in my own baseline design** — e.g. two SIL 3 HIPPS
 valves on the same SIS output card. The design was fixed and the specification clause widened, rather
@@ -126,13 +126,25 @@ than the rule weakened.
 - [Loop check sheets — excerpt (PDF, draft)](samples/Loop_Check_Sheets_excerpt_DRAFT.pdf)
 - [Consistency check report](samples/Consistency_Check_Report.md)
 
-## Design for portability
+## Proven on a second plant
 
-A new project is configuration, not code: tag convention, unit spellings, card catalogue, Excel column
-layouts, rule parameters with their spec clauses, and document templates all live in the project folder.
-One database and one knowledge index per project keep client information isolated. The next milestone is
-loading a second, different fictional plant (a hydrogen plant with IIC areas and another client's
-conventions) with **zero code changes**.
+A new project should be configuration, not code. To test that honestly, I built a second fictional
+plant — **HELIOS-5**, a 20 MW green-hydrogen electrolysis plant for a different client — with a
+different tag grammar (`12PT1101A` instead of `100-PT-011A`), combined cells (`0 – 40 bar(g)`,
+`Ex ia IIC T4 Ga`), coded fail actions, a wide alarm schedule, "IPF" instead of "SIF", and different
+requirement values (15 % spare, IEC-baseline voting, hydrogen detector levels).
+
+I ran the **unchanged** engine first and recorded every failure before fixing anything: ten
+failures, six of them **silent** — the checker quietly checked less (a redundant-transmitter error
+was missed, loops were not grouped). Each was fixed generically in the engine, never for HELIOS-5
+alone, and a rule that lacks a setting is now reported *NOT EVALUATED* instead of passing.
+
+| | DEMO-GPF (gas) | HELIOS-5 (hydrogen) |
+|---|---|---|
+| Seeded errors found | 47 / 47 | 18 / 18 |
+| False positives | 0 | 0 |
+| Error-free plant | 0 findings | 0 findings |
+| Project-specific engine code | — | **none** |
 
 ## Safety and governance
 
@@ -147,7 +159,6 @@ conventions) with **zero code changes**.
 
 - Pretrained embedding model in the semantic-ranker slot (a corpus-trained LSA ranker was built and measured: no gain on 73 clauses, so not adopted); public vendor datasheets in the index
 - Answer-level evaluation of Claude on the golden questions
-- Portability test on a second fictional plant (HELIOS-5)
 
 ---
 
