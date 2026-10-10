@@ -24,7 +24,7 @@ Four principles, taken from functional-safety practice:
 
 1. **Engineering data is the source of truth.** Client Excel deliverables are imported into one structured
    data model through configurable mapping profiles. Documents are generated *from* the data.
-2. **Deterministic code does the checking and the arithmetic.** 37 consistency rules are written as data
+2. **Deterministic code does the checking and the arithmetic.** 44 consistency rules are written as data
    (YAML), each linked to the governing specification clause. No language model grades its own work.
 3. **Claude is the reasoning and drafting layer.** Through MCP tool servers it triages findings, answers
    questions with citations — or says *"not found"* — and drafts narrative text.
@@ -40,11 +40,12 @@ flowchart LR
         A4[SIF register]:::d
         A5[ESD and F&G C&E]:::d
         A6[BMS sequence]:::d
+        A8[OT network: zones, firewall, assets]:::d
         A7[Client spec, design basis]:::d
     end
     Inputs -->|mapping profiles| DB[(Engineering<br/>database)]
     A7 -->|clause-level index| KB[(Knowledge<br/>index)]
-    DB --> R[Rule engine<br/>37 rules as data]
+    DB --> R[Rule engine<br/>44 rules as data]
     DB --> G[Test generator<br/>deterministic]
     KB --> S[Cited search]
     R & G & S -->|MCP tools| C{{Claude}}
@@ -70,6 +71,11 @@ segregation, IS devices on IS channels, Ex certification vs area classification,
 separate cards, SIF voting vs SIL, C&E completeness and safe positions, BMS purge and trial-for-ignition
 times, F&G detector setpoints and 2ooN confirmation, spare capacity, fiscal meter run completeness.
 
+**OT network (IEC 62443):** every permitting firewall rule maps to a documented conduit, no 'any' rules
+into zones of SL-T 2 and above, untrusted zones reach control and safety zones only through the DMZ,
+zone security levels meet the client minimum, asset inventory complete, firmware checked against
+vendor advisories.
+
 ![Consistency findings](docs/images/consistency-findings.png)
 
 ### 2. Specification assistant
@@ -86,7 +92,8 @@ A requirements register and compliance matrix are built from the spec and linked
 Loop check sheets and a FAT procedure generated from the database: 5-point calibration checks in mA,
 alarm setpoints converted to mA, Pt100 resistances per IEC 60751, NAMUR line-fault checks, C&E functional
 tests with the full **MooN voting matrix** (M−1 initiators must not trip, M must trip), F&G voting groups,
-and BMS sequence tests with negative cases. Open data issues are printed on the affected loop or test.
+BMS sequence tests with negative cases, and IEC 62443 network tests (a positive and a default-deny
+negative test per firewall rule, zone isolation scans from untrusted zones, firmware verification). Open data issues are printed on the affected loop or test.
 
 | C&E tests with voting matrix | BMS sequence test |
 |---|---|
@@ -94,17 +101,19 @@ and BMS sequence tests with negative cases. Open data issues are printed on the 
 
 ![Loop check sheet](docs/images/loop-check-sheet.png)
 
+![FAT network tests](docs/images/fat-network-tests.png)
+
 ## Results on the demo plant
 
 | Measure | Result |
 |---|---|
-| Plant scope | Units 100–900: inlet & HIPPS, separation, compression (API 670 MPS, anti-surge), TEG dehydration with burner management, fiscal metering, condensate & produced water, flare & blowdown, fire & gas, ESD |
-| Data volume | 166 instruments · 393 I/O channels · 112 alarms/trips · 14 SIFs · 2 C&E matrices · BMS sequence |
-| Seeded-error detection | **39 / 39** findings found, **0 false positives**; error-free version of the plant: **0 findings** |
-| Rules | 37, each linked to a clause of the (fictional) client specification |
-| Retrieval accuracy | 59 golden questions: correct clause in top 5 **100 %**, ranked first **85 %** |
-| Generated tests | 127 loop check sheets / 1,038 steps · 25 C&E functional tests · 1 BMS sequence test |
-| Test suite | 38 automated tests, including "error-free plant gives zero findings" |
+| Plant scope | Units 100–900: inlet & HIPPS, separation, compression (API 670 MPS, anti-surge), TEG dehydration with burner management, fiscal metering, condensate & produced water, flare & blowdown, fire & gas, ESD, and the OT network (zones, conduits, firewalls, asset inventory) |
+| Data volume | 166 instruments · 393 I/O channels · 112 alarms/trips · 14 SIFs · 2 C&E matrices · BMS sequence · 8 network zones with firewall rule base |
+| Seeded-error detection | **47 / 47** findings found, **0 false positives**; error-free version of the plant: **0 findings** |
+| Rules | 44, each linked to a clause of the (fictional) client specification |
+| Retrieval accuracy | 64 golden questions: correct clause in top 5 **98 %**, ranked first **84 %** |
+| Generated tests | 127 loop check sheets / 1,038 steps · 25 C&E functional tests · 1 BMS sequence test · network tests per firewall |
+| Test suite | 41 automated tests, including "error-free plant gives zero findings" |
 
 Along the way the rules also caught **real mistakes in my own baseline design** — e.g. two SIL 3 HIPPS
 valves on the same SIS output card. The design was fixed and the specification clause widened, rather
@@ -135,7 +144,6 @@ conventions) with **zero code changes**.
 
 ## Roadmap
 
-- IEC 62443 network slice: zone & conduit model, firewall rule checks
 - Semantic ranker alongside keyword search; public vendor datasheets in the index
 - Answer-level evaluation of Claude on the golden questions
 - Portability test on a second fictional plant (HELIOS-5)
