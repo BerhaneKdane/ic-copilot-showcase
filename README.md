@@ -103,6 +103,14 @@ negative test per firewall rule, zone isolation scans from untrusted zones, firm
 
 ![FAT network tests](docs/images/fat-network-tests.png)
 
+### 4. I/O list generator (version 1.1)
+
+Drafts the I/O list from the instrument index in the client's own layout. On a revision it keeps
+every existing address and logs each change with its reason (new, moved, removed, updated), so built
+wiring is never reshuffled silently. The draft is then run through all the checking rules: on the
+seeded gas plant the 11 I/O-list findings drop to 0, and drafts built from scratch pass all 44 rules
+on both demo plants.
+
 ## Results on the demo plant
 
 | Measure | Result |
